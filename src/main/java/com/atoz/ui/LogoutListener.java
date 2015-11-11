@@ -1,0 +1,19 @@
+package com.atoz.ui;
+
+import com.vaadin.navigator.Navigator;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.UI;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+/**
+ * Created by Sergiu on 07.11.2015.
+ */
+public class LogoutListener implements Button.ClickListener {
+  @Override
+  public void buttonClick(Button.ClickEvent clickEvent) {
+    SecurityContextHolder.clearContext();
+    UI.getCurrent().close();
+    Navigator navigator = UI.getCurrent().getNavigator();
+    navigator.navigateTo("login");
+  }
+}
