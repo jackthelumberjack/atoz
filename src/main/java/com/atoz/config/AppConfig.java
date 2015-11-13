@@ -9,7 +9,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -22,7 +21,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan("com.atoz")
 @PropertySource("classpath:application.properties")
-@ImportResource("classpath:spring-security.xml")
+@ImportResource("classpath:applicationContext.xml")
 public class AppConfig {
 
   private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
