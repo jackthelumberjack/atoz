@@ -1,59 +1,28 @@
 package com.atoz.model;
 
-import javax.persistence.*;
-
 /**
- * Created by Sergiu on 09.11.2015.
+ * Created by Sergiu on 14.11.2015.
  */
-@Entity
-@Table(name="users")
 public class User {
-
-  @Id
-  @GeneratedValue
-  private Integer id;
-
-  private String login;
-
+  private String userName;
   private String password;
+  private String role;
 
-  @OneToOne(cascade= CascadeType.ALL)
-  @JoinTable(name="user_roles",
-      joinColumns = {@JoinColumn(name="user_id", referencedColumnName="id")},
-      inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")}
-  )
-  private Role role;
-
-  public Integer getId() {
-    return id;
+  public User(String userName, String password, String role) {
+    this.userName = userName;
+    this.password = password;
+    this.role = role;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getLogin() {
-    return login;
-  }
-
-  public void setLogin(String login) {
-    this.login = login;
+  public String getUserName() {
+    return userName;
   }
 
   public String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public Role getRole() {
+  public String getRole() {
     return role;
   }
-
-  public void setRole(Role role) {
-    this.role = role;
-  }
-
 }

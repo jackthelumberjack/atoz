@@ -14,12 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 
-public class UserView extends VerticalLayout implements View {
+public class AdminView extends VerticalLayout implements View {
 
   /**
    * Constructs an empty VerticalLayout.
    */
-  public UserView() {
+  public AdminView() {
   }
 
   public void enter(ViewChangeListener.ViewChangeEvent event) {
@@ -38,8 +38,8 @@ public class UserView extends VerticalLayout implements View {
 
       for (GrantedAuthority ga : authorities) {
         String authority = ga.getAuthority();
-        if ("user".equals(authority)) {
-          Label lblAuthority = new Label("You are a user.");
+        if ("admin".equals(authority)) {
+          Label lblAuthority = new Label("You are an administrator. ");
           addComponent(lblAuthority);
         }
       }
