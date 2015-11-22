@@ -19,7 +19,7 @@ import java.util.List;
  * Created by Sergiu on 09.11.2015.
  */
 @Repository
-public class UserDAOImpl {
+public class UserDAOImpl implements UserDAO {
 
   private Log log = LogFactory.getLog(UserDAOImpl.class);
 
@@ -30,10 +30,12 @@ public class UserDAOImpl {
 
   NamedParameterJdbcTemplate template;
 
+  @Override
   public void setDataSource(DataSource dataSource) {
     template = new NamedParameterJdbcTemplate(dataSource);
   }
 
+  @Override
   public User getUser(String login) {
     MapSqlParameterSource params = new MapSqlParameterSource();
     params.addValue("login", login);

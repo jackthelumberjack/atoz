@@ -2,6 +2,7 @@ package com.atoz.config;
 
 import com.atoz.auth.AuthManager;
 import com.atoz.service.UserService;
+import com.atoz.service.UserServiceImpl;
 import com.atoz.ui.LoginFormListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,7 +20,7 @@ public class AppConfig {
 
     @Bean
     public UserService userService() {
-        UserService res = new UserService();
+        UserService res = new UserServiceImpl();
         return res;
     }
 
