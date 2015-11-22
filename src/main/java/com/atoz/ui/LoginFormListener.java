@@ -1,6 +1,7 @@
 package com.atoz.ui;
 
 import com.atoz.auth.AuthManager;
+import com.atoz.auth.SecurityRole;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
@@ -36,9 +37,9 @@ public class LoginFormListener implements Button.ClickListener {
       Navigator navigator = UI.getCurrent().getNavigator();
 
       for (GrantedAuthority grantedAuthority : result.getAuthorities()) {
-        if (grantedAuthority.getAuthority().equals("admin")) {
-          navigator.navigateTo("admin");
-        } else {
+        if (grantedAuthority.getAuthority().equalsIgnoreCase(SecurityRole.ADMIN.toString())) {
+          navigator.navigateTo("user");
+        } else if (grantedAuthority.getAuthority().equalsIgnoreCase(SecurityRole.USER.toString())){
           navigator.navigateTo("user");
         }
       }

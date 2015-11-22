@@ -28,7 +28,6 @@ public class AppUI extends UI {
 
     navigator.addView("login", LoginView.class);
     navigator.addView("user", UserView.class);
-    navigator.addView("admin", AdminView.class);
 
     navigator.navigateTo("login");
     setNavigator(navigator);
