@@ -26,7 +26,7 @@ public class LoginForm extends VerticalLayout {
     logo.setWidth("100%");
 
     VerticalLayout loginLayout = new VerticalLayout();
-    loginLayout.setStyleName("v-ddwrapper-over");
+//    loginLayout.setStyleName("v-ddwrapper-over");
     loginLayout.addComponent(logo);
     loginLayout.addComponent(loginForm);
     loginLayout.addComponent(btnLogin);
