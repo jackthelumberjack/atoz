@@ -1,6 +1,7 @@
 package com.atoz.ui;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.WrappedHttpSession;
@@ -13,6 +14,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 @PreserveOnRefresh
+@Theme("chameleon")
 public class AppUI extends UI {
 
   private ApplicationContext applicationContext;

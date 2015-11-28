@@ -24,7 +24,7 @@ public class LoginFormListener implements Button.ClickListener {
   public void buttonClick(Button.ClickEvent event) {
     try {
       Button source = event.getButton();
-      LoginForm parent = (LoginForm) source.getParent();
+      LoginForm parent = (LoginForm) source.getParent().getParent();
       String username = parent.getTxtLogin().getValue();
       String password = parent.getTxtPassword().getValue();
 

@@ -1,5 +1,6 @@
 package com.atoz.ui;
 
+import com.vaadin.addon.calendar.event.CalendarEvent;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -9,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import sun.util.resources.cldr.ar.CalendarData_ar_YE;
 
 import java.util.Collection;
+import java.util.Date;
 
 public class UserView extends VerticalLayout implements View {
 
@@ -19,6 +20,7 @@ public class UserView extends VerticalLayout implements View {
   private HorizontalLayout lowerSection;
   private VerticalLayout sideMenu;
   private VerticalLayout content;
+  private Calendar userCalendar;
 
   /**
    * Constructs an empty VerticalLayout.
@@ -32,6 +34,7 @@ public class UserView extends VerticalLayout implements View {
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
     upperSection = new HorizontalLayout();
+//    upperSection.setStyleName("v-ddwrapper-over");
     upperSection.setSizeFull();
 
     Label labelLogin = new Label("Welcome, " + name);
@@ -41,11 +44,19 @@ public class UserView extends VerticalLayout implements View {
 
     MenuBar menuBar = new MenuBar();
     MenuBar.MenuItem userMenu = menuBar.addItem("User", null, null);
+    userMenu.addItem("Show calendar", null, new MenuBar.Command() {
+      @Override
+      public void menuSelected(MenuBar.MenuItem menuItem) {
+        userCalendar = new Calendar();
+        userCalendar.setSizeFull();
+        content.removeAllComponents();
+        content.addComponent(userCalendar);
+      }
+    });
     userMenu.addItem("Logout", null, new MenuBar.Command() {
       @Override
       public void menuSelected(MenuBar.MenuItem menuItem) {
         SecurityContextHolder.clearContext();
-//        UI.getCurrent().close();
         Navigator navigator = UI.getCurrent().getNavigator();
         navigator.navigateTo("login");
       }
@@ -54,15 +65,15 @@ public class UserView extends VerticalLayout implements View {
     upperSection.setComponentAlignment(menuBar, Alignment.MIDDLE_RIGHT);
 
     sideMenu = new VerticalLayout();
+//    sideMenu.setStyleName("v-ddwrapper-over");
     sideMenu.setSizeFull();
-    sideMenu.addComponent(new Label("label2"));
-    sideMenu.addComponent(new Calendar());
 
     content = new VerticalLayout();
+//    content.setStyleName("v-ddwrapper-over");
     content.setSizeFull();
-    content.addComponent(new Label("label3"));
 
     lowerSection = new HorizontalLayout();
+//    lowerSection.setStyleName("v-ddwrapper-over");
     lowerSection.setSizeFull();
     lowerSection.addComponent(content);
     lowerSection.addComponent(sideMenu);
