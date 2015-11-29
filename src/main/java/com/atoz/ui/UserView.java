@@ -1,5 +1,6 @@
 package com.atoz.ui;
 
+import com.atoz.auth.SecurityRole;
 import com.vaadin.addon.calendar.event.CalendarEvent;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.navigator.Navigator;
@@ -7,7 +8,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -31,7 +31,7 @@ public class UserView extends VerticalLayout implements View {
   private void initLayouts(Authentication authentication) {
     String name = authentication.getName();
 
-    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+    Collection<SecurityRole> authorities = (Collection<SecurityRole>) authentication.getAuthorities();
 
     upperSection = new HorizontalLayout();
 //    upperSection.setStyleName("v-ddwrapper-over");
@@ -43,7 +43,27 @@ public class UserView extends VerticalLayout implements View {
     upperSection.setMargin(true);
 
     MenuBar menuBar = new MenuBar();
+
+    if (authorities.contains(SecurityRole.INSTRUCTOR)) {
+      MenuBar.MenuItem instructorMenu = menuBar.addItem("Instructor", null, null);
+    }
+    if (authorities.contains(SecurityRole.ADMIN)) {
+      MenuBar.MenuItem adminMenu = menuBar.addItem("Admin", null, null);
+    }
+
     MenuBar.MenuItem userMenu = menuBar.addItem("User", null, null);
+    userMenu.addItem("View details", null, new MenuBar.Command() {
+      @Override
+      public void menuSelected(MenuBar.MenuItem menuItem) {
+        UserDetailsLayout userDetailsLayout = new UserDetailsLayout(name);
+        userDetailsLayout.setHeight("30%");
+        userDetailsLayout.setWidth("20%");
+
+        content.removeAllComponents();
+        content.addComponent(userDetailsLayout);
+        content.setComponentAlignment(userDetailsLayout, Alignment.MIDDLE_CENTER);
+      }
+    });
     userMenu.addItem("Show calendar", null, new MenuBar.Command() {
       @Override
       public void menuSelected(MenuBar.MenuItem menuItem) {
@@ -61,6 +81,7 @@ public class UserView extends VerticalLayout implements View {
         navigator.navigateTo("login");
       }
     });
+
     upperSection.addComponent(menuBar);
     upperSection.setComponentAlignment(menuBar, Alignment.MIDDLE_RIGHT);
 

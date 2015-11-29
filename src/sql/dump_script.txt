@@ -1,0 +1,7 @@
+//Create dump files
+mysqldump -u root -p --no-create-info atozdb > atozdb.data.sql
+mysqldump -u root -p atozdb --no-data > atozdb.schema.sql
+
+//Restore database from dump files
+mysql -u root -p atozdb < atozdb.schema.sql
+mysql -u root -p atozdb < atozdb.data.sql

@@ -14,13 +14,13 @@
     <context-param>
         <param-name>contextClass</param-name>
         <param-value>
-            org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            org.springframework.web.context.support.XmlWebApplicationContext
         </param-value>
     </context-param>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>com.atoz.config.AppConfig</param-value>
+        <param-value>classpath*:applicationContext.xml</param-value>
     </context-param>
 
     <listener>

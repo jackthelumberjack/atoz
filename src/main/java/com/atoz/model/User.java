@@ -1,17 +1,26 @@
 package com.atoz.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Sergiu on 14.11.2015.
  */
 public class User {
   private String userName;
   private String password;
-  private String role;
+  private List<String> roles;
 
-  public User(String userName, String password, String role) {
+  public User(String userName, String password) {
     this.userName = userName;
     this.password = password;
-    this.role = role;
+  }
+
+  public void addRole(String role) {
+    if (roles == null) {
+      roles = new ArrayList<>();
+    }
+    roles.add(role);
   }
 
   public String getUserName() {
@@ -22,7 +31,7 @@ public class User {
     return password;
   }
 
-  public String getRole() {
-    return role;
+  public List<String> getRoles() {
+    return roles;
   }
 }

@@ -9,4 +9,12 @@
         <property name="userDAO"  ref="userDAO" />
     </bean>
 
+    <bean id="authManager" class="com.atoz.auth.AuthManager">
+        <property name="userService"  ref="userService" />
+    </bean>
+
+    <bean id="loginFormListener" class="com.atoz.ui.LoginFormListener">
+        <property name="authManager"  ref="authManager" />
+    </bean>
+
 </beans>
