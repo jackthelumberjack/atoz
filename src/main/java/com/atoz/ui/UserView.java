@@ -1,7 +1,6 @@
 package com.atoz.ui;
 
 import com.atoz.auth.SecurityRole;
-import com.vaadin.addon.calendar.event.CalendarEvent;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -12,7 +11,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
-import java.util.Date;
 
 public class UserView extends VerticalLayout implements View {
 
@@ -46,7 +44,26 @@ public class UserView extends VerticalLayout implements View {
 
     if (authorities.contains(SecurityRole.INSTRUCTOR)) {
       MenuBar.MenuItem instructorMenu = menuBar.addItem("Instructor", null, null);
+      instructorMenu.addItem("Create course", new MenuBar.Command() {
+        @Override
+        public void menuSelected(MenuBar.MenuItem menuItem) {
+          ContentEditor contentEditor = new ContentEditor();
+          contentEditor.setSizeFull();
+          content.removeAllComponents();
+          content.addComponent(contentEditor);
+        }
+      });
+
+      instructorMenu.addItem("Manage files", new MenuBar.Command() {
+        @Override
+        public void menuSelected(MenuBar.MenuItem menuItem) {
+          FileManager fileManager = new FileManager();
+          content.removeAllComponents();
+          content.addComponent(fileManager);
+        }
+      });
     }
+
     if (authorities.contains(SecurityRole.ADMIN)) {
       MenuBar.MenuItem adminMenu = menuBar.addItem("Admin", null, null);
     }
