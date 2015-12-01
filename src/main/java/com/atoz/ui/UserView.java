@@ -5,6 +5,7 @@ import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -47,7 +48,7 @@ public class UserView extends VerticalLayout implements View {
       instructorMenu.addItem("Create course", new MenuBar.Command() {
         @Override
         public void menuSelected(MenuBar.MenuItem menuItem) {
-          ContentEditor contentEditor = new ContentEditor();
+          ContentEditor contentEditor = new ContentEditor(name);
           contentEditor.setSizeFull();
           content.removeAllComponents();
           content.addComponent(contentEditor);
@@ -109,6 +110,7 @@ public class UserView extends VerticalLayout implements View {
     content = new VerticalLayout();
 //    content.setStyleName("v-ddwrapper-over");
     content.setSizeFull();
+    content.setMargin(new MarginInfo(true, false, false, false));
 
     lowerSection = new HorizontalLayout();
 //    lowerSection.setStyleName("v-ddwrapper-over");

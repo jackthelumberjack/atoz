@@ -2,6 +2,7 @@ package com.atoz.service;
 
 import com.atoz.auth.SecurityRole;
 import com.atoz.dao.UserDAO;
+import com.atoz.model.Department;
 import com.atoz.model.UserInformation;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,5 +46,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserInformation loadUserInformation(String userName) {
     return userDAO.getUserInformation(userName);
+  }
+
+  @Override
+  public List<Department> getUserDepartments(String userName) {
+    return userDAO.getUserDepartments(userName);
   }
 }
