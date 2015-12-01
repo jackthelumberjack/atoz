@@ -1,10 +1,13 @@
 package com.atoz.ui;
 
+import com.atoz.model.Course;
 import com.atoz.model.Department;
+import com.atoz.service.CourseService;
 import com.atoz.service.UserService;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,14 +24,18 @@ public class ContentEditor extends HorizontalLayout {
   private PopupDateField endDate;
 
   private UserService userService;
+  private CourseService courseService;
+
+  private String userName;
 
   public ContentEditor(String userName) {
+    userService = ContextAware.getBean(UserService.class);
+    courseService = ContextAware.getBean(CourseService.class);
+
+    this.userName = userName;
     initLayout();
     addHandlers();
-
-    userService = ContextAware.getBean(UserService.class);
-
-    loadData(userName);
+    loadData();
   }
 
   private void initLayout() {
@@ -138,17 +145,31 @@ public class ContentEditor extends HorizontalLayout {
     saveButton.addClickListener(new Button.ClickListener() {
       @Override
       public void buttonClick(Button.ClickEvent clickEvent) {
+        saveCourse();
       }
     });
   }
 
-  private void loadData(String userName) {
-    BeanItemContainer<Department> beanItemContainer = new BeanItemContainer<Department>(Department.class);
+  private void loadData() {
+    BeanItemContainer<Department> beanItemContainer = new BeanItemContainer<>(Department.class);
     List<Department> departments = userService.getUserDepartments(userName);
     beanItemContainer.addAll(departments);
     department.setContainerDataSource(beanItemContainer);
     department.setItemCaptionPropertyId("name");
     department.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
     department.setNullSelectionAllowed(false);
+  }
+
+  private void saveCourse() {
+    String courseName = name.getValue();
+    String courseCode = code.getValue();
+    int departmentId = ((Department)department.getValue()).getId();
+    Date courseStartDate = startDate.getValue();
+    Date courseStopDate = endDate.getValue();
+    String courseContent = textArea.getValue();
+
+    Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
+
+    courseService.saveCourse(course, userName);
   }
 }
