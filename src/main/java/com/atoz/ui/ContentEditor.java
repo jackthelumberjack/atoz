@@ -1,7 +1,9 @@
 package com.atoz.ui;
 
 import com.atoz.model.Course;
+import com.atoz.model.CourseDTO;
 import com.atoz.model.Department;
+import com.atoz.security.SecurityHelper;
 import com.atoz.service.CourseService;
 import com.atoz.service.UserService;
 import com.vaadin.data.util.BeanItemContainer;
@@ -9,30 +11,32 @@ import com.vaadin.ui.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Sergiu on 30.11.2015.
  */
 public class ContentEditor extends HorizontalLayout {
 
-  private RichTextArea textArea;
   private Button saveButton;
+  private Button loadButton;
+
+  private RichTextArea textArea;
   private TextField name;
   private TextField code;
   private ComboBox department;
   private PopupDateField startDate;
-  private PopupDateField endDate;
+  private PopupDateField stopDate;
 
   private UserService userService;
   private CourseService courseService;
 
-  private String userName;
+  private Logger logger = Logger.getLogger(ContentEditor.class.getName());
 
-  public ContentEditor(String userName) {
+  public ContentEditor() {
     userService = ContextAware.getBean(UserService.class);
     courseService = ContextAware.getBean(CourseService.class);
 
-    this.userName = userName;
     initLayout();
     addHandlers();
     loadData();
@@ -41,10 +45,20 @@ public class ContentEditor extends HorizontalLayout {
   private void initLayout() {
     VerticalLayout leftMenu = new VerticalLayout();
     leftMenu.setSizeFull();
+
+    VerticalLayout buttonsLayout = new VerticalLayout();
+//    buttonsLayout.setStyleName("v-ddwrapper-over");
     saveButton = new Button("Save");
     saveButton.setWidth("100%");
-    leftMenu.addComponent(saveButton);
-    leftMenu.setComponentAlignment(saveButton, Alignment.MIDDLE_CENTER);
+    loadButton = new Button("Load");
+    loadButton.setWidth("100%");
+    buttonsLayout.addComponent(saveButton);
+    buttonsLayout.addComponent(loadButton);
+    buttonsLayout.setComponentAlignment(saveButton, Alignment.MIDDLE_CENTER);
+    buttonsLayout.setComponentAlignment(loadButton, Alignment.MIDDLE_CENTER);
+
+    leftMenu.addComponent(buttonsLayout);
+    leftMenu.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
 
     HorizontalLayout topMenu = new HorizontalLayout();
     topMenu.setSizeFull();
@@ -105,14 +119,14 @@ public class ContentEditor extends HorizontalLayout {
     endDateLayout.setSizeFull();
 //    endDateLayout.setStyleName("v-ddwrapper-over");
     Label endDateLabel = new Label("End date: ");
-    endDate = new PopupDateField();
-    endDate.setWidth("75%");
+    stopDate = new PopupDateField();
+    stopDate.setWidth("75%");
     endDateLayout.addComponent(endDateLabel);
-    endDateLayout.addComponent(endDate);
+    endDateLayout.addComponent(stopDate);
     endDateLayout.setComponentAlignment(endDateLabel, Alignment.MIDDLE_LEFT);
-    endDateLayout.setComponentAlignment(endDate, Alignment.MIDDLE_LEFT);
+    endDateLayout.setComponentAlignment(stopDate, Alignment.MIDDLE_LEFT);
     endDateLayout.setExpandRatio(endDateLabel, 1);
-    endDateLayout.setExpandRatio(endDate, 2);
+    endDateLayout.setExpandRatio(stopDate, 2);
 
     topMenu.addComponent(nameLayout);
     topMenu.addComponent(codeLayout);
@@ -148,11 +162,17 @@ public class ContentEditor extends HorizontalLayout {
         saveCourse();
       }
     });
+    loadButton.addClickListener(new Button.ClickListener() {
+      @Override
+      public void buttonClick(Button.ClickEvent clickEvent) {
+        loadCourse();
+      }
+    });
   }
 
   private void loadData() {
     BeanItemContainer<Department> beanItemContainer = new BeanItemContainer<>(Department.class);
-    List<Department> departments = userService.getUserDepartments(userName);
+    List<Department> departments = userService.getUserDepartments(SecurityHelper.getUserName());
     beanItemContainer.addAll(departments);
     department.setContainerDataSource(beanItemContainer);
     department.setItemCaptionPropertyId("name");
@@ -165,11 +185,67 @@ public class ContentEditor extends HorizontalLayout {
     String courseCode = code.getValue();
     int departmentId = ((Department)department.getValue()).getId();
     Date courseStartDate = startDate.getValue();
-    Date courseStopDate = endDate.getValue();
+    Date courseStopDate = stopDate.getValue();
     String courseContent = textArea.getValue();
 
     Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
 
-    courseService.saveCourse(course, userName);
+    courseService.saveCourse(course, SecurityHelper.getUserName());
+  }
+
+  private void loadCourse() {
+    Window window = new Window("Load course");
+    window.setPosition(0, 0);
+    window.setModal(true);
+    window.setWidth("250px");
+    window.setHeight("150px");
+
+    Label courseLabel = new Label("Select course to load");
+    courseLabel.setWidth("50%");
+
+    ComboBox courseCombo = new ComboBox();
+    List<CourseDTO> courseDTOs = courseService.loadCoursesForUser(SecurityHelper.getUserName());
+    BeanItemContainer<CourseDTO> beanItemContainer = new BeanItemContainer<>(CourseDTO.class);
+    beanItemContainer.addAll(courseDTOs);
+    courseCombo.setContainerDataSource(beanItemContainer);
+    courseCombo.setItemCaptionPropertyId("name");
+    courseCombo.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
+    courseCombo.setNullSelectionAllowed(false);
+
+    HorizontalLayout buttonsLayout = new HorizontalLayout();
+//    buttonsLayout.setStyleName("v-ddwrapper-over");
+    buttonsLayout.setWidth("60%");
+    Button okButton = new Button("OK");
+    okButton.setWidth("100%");
+    okButton.addClickListener(new Button.ClickListener() {
+      @Override
+      public void buttonClick(Button.ClickEvent clickEvent) {
+        Course course = courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getId());
+        name.setValue(course.getName());
+        code.setValue(course.getCode());
+        startDate.setValue(course.getStartDate());
+        stopDate.setValue(course.getStopDate());
+        textArea.setValue(course.getContent());
+        window.close();
+      }
+    });
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setWidth("100%");
+    buttonsLayout.addComponent(okButton);
+    buttonsLayout.addComponent(cancelButton);
+    buttonsLayout.setExpandRatio(okButton, 1);
+    buttonsLayout.setExpandRatio(cancelButton, 1);
+
+    VerticalLayout windowLayout = new VerticalLayout();
+    windowLayout.setSizeFull();
+    window.setContent(windowLayout);
+    windowLayout.addComponent(courseLabel);
+    windowLayout.addComponent(courseCombo);
+    windowLayout.addComponent(buttonsLayout);
+    windowLayout.setComponentAlignment(courseLabel, Alignment.MIDDLE_CENTER);
+    windowLayout.setComponentAlignment(courseCombo, Alignment.MIDDLE_CENTER);
+    windowLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
+
+    UI.getCurrent().addWindow(window);
   }
 }

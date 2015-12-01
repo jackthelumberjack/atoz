@@ -1,4 +1,4 @@
-package com.atoz.auth;
+package com.atoz.security;
 
 import org.springframework.security.core.GrantedAuthority;
 

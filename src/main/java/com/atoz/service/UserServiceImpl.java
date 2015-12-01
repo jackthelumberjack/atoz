@@ -1,6 +1,6 @@
 package com.atoz.service;
 
-import com.atoz.auth.SecurityRole;
+import com.atoz.security.SecurityRole;
 import com.atoz.dao.UserDAO;
 import com.atoz.model.Department;
 import com.atoz.model.UserInformation;

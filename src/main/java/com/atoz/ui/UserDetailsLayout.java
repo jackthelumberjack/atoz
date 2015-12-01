@@ -1,6 +1,7 @@
 package com.atoz.ui;
 
 import com.atoz.model.UserInformation;
+import com.atoz.security.SecurityHelper;
 import com.atoz.service.UserService;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
@@ -19,12 +20,12 @@ public class UserDetailsLayout extends VerticalLayout {
   TextField serialNumber;
   TextField email;
 
-  public UserDetailsLayout(String userName) {
+  public UserDetailsLayout() {
     initLayout();
 
     userService = ContextAware.getBean(UserService.class);
 
-    loadDetails(userName);
+    loadDetails();
   }
 
   private void initLayout() {
@@ -38,8 +39,8 @@ public class UserDetailsLayout extends VerticalLayout {
     addComponent(formLayout);
   }
 
-  private void loadDetails(String userName) {
-    UserInformation userInformation = userService.loadUserInformation(userName);
+  private void loadDetails() {
+    UserInformation userInformation = userService.loadUserInformation(SecurityHelper.getUserName());
     userId.setValue(userInformation.getUserID()+"");
     firstName.setValue(userInformation.getFirstName());
     lastName.setValue(userInformation.getLastName());

@@ -1,4 +1,4 @@
-package com.atoz.auth;
+package com.atoz.security;
 
 import com.atoz.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;

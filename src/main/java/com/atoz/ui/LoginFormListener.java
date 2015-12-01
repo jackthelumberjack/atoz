@@ -1,6 +1,6 @@
 package com.atoz.ui;
 
-import com.atoz.auth.AuthManager;
+import com.atoz.security.AuthManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;

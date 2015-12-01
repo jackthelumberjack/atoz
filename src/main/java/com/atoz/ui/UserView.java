@@ -1,6 +1,7 @@
 package com.atoz.ui;
 
-import com.atoz.auth.SecurityRole;
+import com.atoz.security.SecurityHelper;
+import com.atoz.security.SecurityRole;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -30,7 +31,7 @@ public class UserView extends VerticalLayout implements View {
   private void initLayouts(Authentication authentication) {
     String name = authentication.getName();
 
-    Collection<SecurityRole> authorities = (Collection<SecurityRole>) authentication.getAuthorities();
+    Collection<SecurityRole> authorities = (Collection<SecurityRole>)authentication.getAuthorities();
 
     upperSection = new HorizontalLayout();
 //    upperSection.setStyleName("v-ddwrapper-over");
@@ -48,7 +49,7 @@ public class UserView extends VerticalLayout implements View {
       instructorMenu.addItem("Create course", new MenuBar.Command() {
         @Override
         public void menuSelected(MenuBar.MenuItem menuItem) {
-          ContentEditor contentEditor = new ContentEditor(name);
+          ContentEditor contentEditor = new ContentEditor();
           contentEditor.setSizeFull();
           content.removeAllComponents();
           content.addComponent(contentEditor);
@@ -73,7 +74,7 @@ public class UserView extends VerticalLayout implements View {
     userMenu.addItem("View details", null, new MenuBar.Command() {
       @Override
       public void menuSelected(MenuBar.MenuItem menuItem) {
-        UserDetailsLayout userDetailsLayout = new UserDetailsLayout(name);
+        UserDetailsLayout userDetailsLayout = new UserDetailsLayout();
         userDetailsLayout.setHeight("30%");
         userDetailsLayout.setWidth("20%");
 

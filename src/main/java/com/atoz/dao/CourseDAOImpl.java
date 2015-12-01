@@ -1,15 +1,20 @@
 package com.atoz.dao;
 
 import com.atoz.model.Course;
+import com.atoz.model.CourseDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Sergiu on 01.12.2015.
@@ -42,6 +47,53 @@ public class CourseDAOImpl implements CourseDAO {
       template.update(insertCourse, params, keyHolder);
     } catch (DataAccessException ex) {
       log.error("Failed to save course: " + ex);
+    }
+  }
+
+  private String selectCoursesForUser = "select c.id, c.name from courses c " +
+      " inner join user_course uc on uc.course_id=c.id " +
+      " inner join users u on u.id=uc.user_id " +
+      " where u.login=:login";
+
+  @Override
+  public List<CourseDTO> loadCoursesForUser(String userName) {
+    List<CourseDTO> courseDTOs = null;
+    try {
+      MapSqlParameterSource params = new MapSqlParameterSource();
+      params.addValue("login", userName);
+      courseDTOs = template.query(selectCoursesForUser, params, new CourseDTORowMapper());
+    } catch (DataAccessException ex) {
+      log.error("Failed to load courses for user: " + ex);
+    }
+    return courseDTOs;
+  }
+
+  private String selectCourse = "select * from courses c where c.id=:course_id";
+
+  @Override
+  public Course loadCourse(int courseId) {
+    Course course = null;
+    try {
+      MapSqlParameterSource params = new MapSqlParameterSource();
+      params.addValue("course_id", courseId);
+      course = template.queryForObject(selectCourse, params, new CourseRowMapper());
+    } catch (DataAccessException ex) {
+      log.error("Failed to load course: " + ex);
+    }
+    return course;
+  }
+
+  private final class CourseDTORowMapper implements RowMapper<CourseDTO> {
+    @Override
+    public CourseDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+      return new CourseDTO(resultSet.getInt(1), resultSet.getString(2));
+    }
+  }
+
+  private final class CourseRowMapper implements RowMapper<Course> {
+    @Override
+    public Course mapRow(ResultSet resultSet, int i) throws SQLException {
+      return new Course(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getInt(4), resultSet.getDate(5), resultSet.getDate(6), resultSet.getString(7));
     }
   }
 }

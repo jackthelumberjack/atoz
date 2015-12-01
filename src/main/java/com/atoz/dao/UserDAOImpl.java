@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -19,10 +18,15 @@ import java.util.List;
 /**
  * Created by Sergiu on 09.11.2015.
  */
-@Repository
 public class UserDAOImpl implements UserDAO {
 
   private Log log = LogFactory.getLog(UserDAOImpl.class);
+
+  NamedParameterJdbcTemplate template;
+
+  public void setDataSource(DataSource dataSource) {
+    template = new NamedParameterJdbcTemplate(dataSource);
+  }
 
   String selectRoles = "select r.role as role from users u " +
       "inner join user_role ur on ur.user_id = u.id " +
@@ -30,21 +34,6 @@ public class UserDAOImpl implements UserDAO {
       "where u.login=:login";
 
   String selectUser = "select u.login as login, u.password as password from users u where u.login=:login";
-
-  String selectUserInformation = "select ud.user_id, ud.first_name, ud.last_name, ud.serial_number, ud.email from user_details ud " +
-      " inner join users u on ud.user_id=u.id " +
-      " where u.login=:login";
-
-  String selectUserDepartments = "select d.id, d.name from departments d " +
-      " inner join user_department ud on ud.department_id=d.id " +
-      " inner join users u on u.id=ud.user_id " +
-      " where u.login=:login";
-
-  NamedParameterJdbcTemplate template;
-
-  public void setDataSource(DataSource dataSource) {
-    template = new NamedParameterJdbcTemplate(dataSource);
-  }
 
   @Override
   public User getUser(String login) {
@@ -70,6 +59,10 @@ public class UserDAOImpl implements UserDAO {
     return user;
   }
 
+  String selectUserInformation = "select ud.user_id, ud.first_name, ud.last_name, ud.serial_number, ud.email from user_details ud " +
+      " inner join users u on ud.user_id=u.id " +
+      " where u.login=:login";
+
   @Override
   public UserInformation getUserInformation(String login) {
     MapSqlParameterSource params = new MapSqlParameterSource();
@@ -82,6 +75,11 @@ public class UserDAOImpl implements UserDAO {
     }
     return userInformation;
   }
+
+  String selectUserDepartments = "select d.id, d.name from departments d " +
+      " inner join user_department ud on ud.department_id=d.id " +
+      " inner join users u on u.id=ud.user_id " +
+      " where u.login=:login";
 
   @Override
   public List<Department> getUserDepartments(String login) {
