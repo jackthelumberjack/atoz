@@ -1,5 +1,8 @@
 package com.atoz.ui;
 
+import com.atoz.model.Forum;
+import com.atoz.model.ForumPost;
+import com.atoz.model.ForumSubject;
 import com.atoz.security.SecurityHelper;
 import com.atoz.security.SecurityRole;
 import com.vaadin.addon.calendar.ui.Calendar;
@@ -12,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserView extends VerticalLayout implements View {
@@ -21,6 +25,7 @@ public class UserView extends VerticalLayout implements View {
   private VerticalLayout sideMenu;
   private VerticalLayout content;
   private Calendar userCalendar;
+  private ForumView forumView;
 
   /**
    * Constructs an empty VerticalLayout.
@@ -92,6 +97,18 @@ public class UserView extends VerticalLayout implements View {
         content.addComponent(userCalendar);
       }
     });
+
+    userMenu.addItem("Forum", null, new MenuBar.Command() {
+      @Override
+      public void menuSelected(MenuBar.MenuItem menuItem) {
+        forumView = new ForumView();
+
+        forumView.constructForum();
+        content.removeAllComponents();
+        content.addComponent(forumView);
+      }
+    });
+
     userMenu.addItem("Logout", null, new MenuBar.Command() {
       @Override
       public void menuSelected(MenuBar.MenuItem menuItem) {
