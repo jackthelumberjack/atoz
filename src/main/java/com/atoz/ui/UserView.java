@@ -101,7 +101,7 @@ public class UserView extends VerticalLayout implements View {
     userMenu.addItem("Forum", null, new MenuBar.Command() {
       @Override
       public void menuSelected(MenuBar.MenuItem menuItem) {
-        forumView = new ForumView();
+        forumView = new ForumView(name);
 
         forumView.constructForum();
         content.removeAllComponents();

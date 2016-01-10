@@ -4,6 +4,7 @@ import com.atoz.model.Forum;
 import com.atoz.model.ForumSubject;
 import com.vaadin.client.metadata.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.data.*;
 
@@ -19,13 +20,15 @@ public class ForumView extends VerticalLayout {
     private Button button;
     private TextField subjectTitle;
     private HorizontalLayout horizontal;
+    private String userName;
 
-    public ForumView() {
+    public ForumView(String name) {
         forum = new Forum();
         button = new Button("Add topic");
         subjectTitle = new TextField();
         horizontal = new HorizontalLayout();
         list = new ListSelect();
+        this.userName = name;
         initListeners();
         initContainer();
     }
@@ -60,7 +63,7 @@ public class ForumView extends VerticalLayout {
             }
         }
 
-        TopicView topics = new TopicView(subject);
+        TopicView topics = new TopicView(subject, userName);
         topics.constructView();
 
         this.removeAllComponents();

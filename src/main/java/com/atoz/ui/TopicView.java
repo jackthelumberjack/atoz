@@ -16,13 +16,15 @@ public class TopicView extends VerticalLayout {
     private HorizontalLayout horizontal;
     private Button send;
     private TextField text;
+    private String userName;
 
-    public TopicView(ForumSubject forumSubject) {
+    public TopicView(ForumSubject forumSubject, String userName) {
         list = new ListSelect();
         this.forumSubject = forumSubject;
         horizontal = new HorizontalLayout();
         send = new Button("Send");
         text = new TextField();
+        this.userName = userName;
         initTopics();
         initListeners();
     }
@@ -62,7 +64,7 @@ public class TopicView extends VerticalLayout {
     }
 
     public void postMessage(String message) {
-        ForumPost p = new ForumPost("author","title",message,forumSubject.getPosts().size());
+        ForumPost p = new ForumPost(userName,"title",message,forumSubject.getPosts().size());
         forumSubject.addPost(p);
         list.addItem(p.toString());
     }
