@@ -9,19 +9,14 @@ public class ForumPost {
     private String message;
     private int id;
 
-    public ForumPost(String author, String title, String message, int id) {
+    public ForumPost(String author, String message, int id) {
         this.author = author;
         this.message = message;
-        this.title = title;
         this.id = id;
     }
 
     public String getAuthor() {
         return author;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getMessage() {

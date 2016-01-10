@@ -19,7 +19,7 @@ public class TopicView extends VerticalLayout {
     private String userName;
 
     public TopicView(ForumSubject forumSubject, String userName) {
-        list = new ListSelect();
+        list = new ListSelect(forumSubject.getTitle());
         this.forumSubject = forumSubject;
         horizontal = new HorizontalLayout();
         send = new Button("Send");
@@ -53,18 +53,19 @@ public class TopicView extends VerticalLayout {
         list.setSizeFull();
         list.setWidth("105%");
         list.setNullSelectionAllowed(false);
-        list.setImmediate(true);
         this.addComponent(list);
-
 
         horizontal.removeAllComponents();
         horizontal.addComponent(text);
         horizontal.addComponent(send);
         this.addComponent(horizontal);
+        this.setSizeFull();
+
+
     }
 
     public void postMessage(String message) {
-        ForumPost p = new ForumPost(userName,"title",message,forumSubject.getPosts().size());
+        ForumPost p = new ForumPost(userName,message,forumSubject.getPosts().size());
         forumSubject.addPost(p);
         list.addItem(p.toString());
     }

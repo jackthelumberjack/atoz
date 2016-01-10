@@ -47,7 +47,7 @@ public class ForumSubject {
         return posts;
     }
 
-    private String getTitle() {
+    public String getTitle() {
         return title;
     }
 

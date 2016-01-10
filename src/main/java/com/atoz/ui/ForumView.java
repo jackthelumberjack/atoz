@@ -4,7 +4,6 @@ import com.atoz.model.Forum;
 import com.atoz.model.ForumSubject;
 import com.vaadin.client.metadata.Property;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.data.*;
 
@@ -20,15 +19,17 @@ public class ForumView extends VerticalLayout {
     private Button button;
     private TextField subjectTitle;
     private HorizontalLayout horizontal;
+    private IndexedContainer container;
     private String userName;
 
-    public ForumView(String name) {
+    public ForumView(String userName) {
         forum = new Forum();
         button = new Button("Add topic");
         subjectTitle = new TextField();
         horizontal = new HorizontalLayout();
         list = new ListSelect();
-        this.userName = name;
+        container = new IndexedContainer();
+        this.userName = userName;
         initListeners();
         initContainer();
     }
@@ -41,6 +42,8 @@ public class ForumView extends VerticalLayout {
                 if (subjectTitle.getValue().length() != 0) {
                     postSubject(forum.getSubjects().size(), subjectTitle.getValue());
                 }
+
+                constructForum();
             }
         });
 
@@ -48,6 +51,7 @@ public class ForumView extends VerticalLayout {
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 goToForumTopic(event.getProperty().toString());
+
             }
         });
 
@@ -63,12 +67,12 @@ public class ForumView extends VerticalLayout {
             }
         }
 
-        TopicView topics = new TopicView(subject, userName);
+        Notification.show(subject.toString());
+        TopicView topics = new TopicView(subject,userName);
         topics.constructView();
 
         this.removeAllComponents();
         this.addComponent(topics);
-        Notification.show(subject.toString());
 
     }
 
