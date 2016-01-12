@@ -40,29 +40,41 @@ public class CourseDAOImpl implements CourseDAO {
   private String insertCourse = "insert into courses(name, code, department_id, start_date, end_date, content) " +
       " values(:name, :code, :department_id, :start_date, :end_date, :content)";
 
-  private String insertCourseUser="insert into user_course(uid, cid) " +
+  private String insertCourseUser="insert into user_course(user_id, course_id) " +
       " values(:uid, :cid)";
 
   @Override
-  public void saveCourse(Course course, String userName) {
+  public int saveCourse(Course course, String userName) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     MapSqlParameterSource params = new MapSqlParameterSource();
     try {
       params.addValue("name", course.getName());
+      Course cu=null;
+      cu=loadCourse(course.getName());
+      if(cu!=null)
+      {
+          return 1; //course already exists
+      }
       params.addValue("code", course.getCode());
       params.addValue("department_id", course.getDepartmentId());
       params.addValue("start_date", course.getStartDate());
       params.addValue("end_date", course.getStopDate());
       params.addValue("content", course.getContent());
+
+
       template.update(insertCourse, params, keyHolder);
       UserInformation userInformation=userDAO.getUserInformation("sbreban");
       Course c=loadCourse(course.getName());
-      params = new MapSqlParameterSource();
-      params.addValue("uid",userInformation.getUserID());
-      params.addValue("cid",c.getId());
+      MapSqlParameterSource params2 = new MapSqlParameterSource();
+   //   params = new MapSqlParameterSource();
+      System.out.println(""+userInformation.getUserID());
+      params2.addValue("uid",userInformation.getUserID());
+      params2.addValue("cid",c.getId());
+      template.update(insertCourseUser, params2, keyHolder);
     } catch (DataAccessException ex) {
       log.error("Failed to save course: " + ex);
     }
+    return 0;//course does not exist
   }
 
   private String selectCoursesForUser = "select c.id, c.name from courses c " +

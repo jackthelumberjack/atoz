@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface CourseService {
 
-  void saveCourse(Course course, String userName);
+  int saveCourse(Course course, String userName);
   List<CourseDTO> loadCoursesForUser(String userName);
   Course loadCourse(String coursename);
 

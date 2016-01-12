@@ -18,8 +18,8 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public void saveCourse(Course course, String userName) {
-    courseDAO.saveCourse(course, userName);
+  public int saveCourse(Course course, String userName) {
+    return courseDAO.saveCourse(course, userName);
   }
 
   @Override

@@ -198,11 +198,20 @@ public class ContentEditor extends HorizontalLayout {
               .show(Page.getCurrent());
     }else{
       Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
-      courseService.saveCourse(course, SecurityHelper.getUserName());
-      new Notification("Course has been <font color=green>successfully</font> added!",
-              "<br/>",
-              Notification.TYPE_HUMANIZED_MESSAGE, true)
-              .show(Page.getCurrent());
+      int value=courseService.saveCourse(course, SecurityHelper.getUserName());
+      if (value==1)
+      {
+        new Notification("Course <font color=red>exists</font> already!",
+                "<br/>",
+                Notification.TYPE_HUMANIZED_MESSAGE, true)
+                .show(Page.getCurrent());
+      }else{
+        new Notification("Course has been <font color=green>successfully</font> added!",
+                "<br/>",
+                Notification.TYPE_HUMANIZED_MESSAGE, true)
+                .show(Page.getCurrent());
+      }
+
     }
 
   }
