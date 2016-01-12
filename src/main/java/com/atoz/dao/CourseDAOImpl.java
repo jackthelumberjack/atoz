@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import com.atoz.dao.UserDAOImpl;
 
 
 import javax.sql.DataSource;
@@ -26,33 +25,24 @@ public class CourseDAOImpl implements CourseDAO {
 
   private Log log = LogFactory.getLog(CourseDAOImpl.class);
 
-
-
-
-
   private NamedParameterJdbcTemplate template;
+  private UserDAO userDAO;
 
   public void setDataSource(DataSource dataSource) {
 
     template = new NamedParameterJdbcTemplate(dataSource);
   }
 
-UserDAO user;
-
-  public void setUserdao(UserDAO userdao) {
-
-    //template = new NamedParameterJdbcTemplate(userdao);
-     user=userdao;
+  public void setUserDAO(UserDAO userDAO) {
+    this.userDAO=userDAO;
   }
 
   private String insertCourse = "insert into courses(name, code, department_id, start_date, end_date, content) " +
       " values(:name, :code, :department_id, :start_date, :end_date, :content)";
 
-
-
-
   private String insertCourseUser="insert into user_course(uid, cid) " +
-          " values(:uid, :cid)";
+      " values(:uid, :cid)";
+
   @Override
   public void saveCourse(Course course, String userName) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -65,16 +55,11 @@ UserDAO user;
       params.addValue("end_date", course.getStopDate());
       params.addValue("content", course.getContent());
       template.update(insertCourse, params, keyHolder);
-     // UserDAOImpl udao =new UserDAOImpl();
-     // UserInformation uinfo=udao.getUserInformation("sbreban");
-      //System.out.println(""+uinfo.getUserID());
-     // Course c=loadCourse(course.getName());
-     // MapSqlParameterSource params2 = new MapSqlParameterSource();
-    //  params2.addValue("uid",uinfo.getUserID());
-     // params2.addValue("cid",c.getId());
-
-
-
+      UserInformation userInformation=userDAO.getUserInformation("sbreban");
+      Course c=loadCourse(course.getName());
+      params = new MapSqlParameterSource();
+      params.addValue("uid",userInformation.getUserID());
+      params.addValue("cid",c.getId());
     } catch (DataAccessException ex) {
       log.error("Failed to save course: " + ex);
     }
@@ -112,10 +97,6 @@ UserDAO user;
     }
     return course;
   }
-
-  //=========================================================
-
-
 
   private final class CourseDTORowMapper implements RowMapper<CourseDTO> {
     @Override
