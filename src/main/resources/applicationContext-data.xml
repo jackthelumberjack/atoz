@@ -14,8 +14,8 @@
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/atozdb" />
-        <property name="username" value="andrei" />
-        <property name="password" value="phobia123" />
+        <property name="username" value="atoz" />
+        <property name="password" value="atoz" />
     </bean>
 
 </beans>

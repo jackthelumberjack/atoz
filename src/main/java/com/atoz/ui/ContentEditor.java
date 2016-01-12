@@ -7,6 +7,7 @@ import com.atoz.security.SecurityHelper;
 import com.atoz.service.CourseService;
 import com.atoz.service.UserService;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
 import java.util.Date;
@@ -183,14 +184,23 @@ public class ContentEditor extends HorizontalLayout {
   private void saveCourse() {
     String courseName = name.getValue();
     String courseCode = code.getValue();
-    int departmentId = ((Department)department.getValue()).getId();
+    int departmentId=0;
+    if(!department.isEmpty()){
+      departmentId = ((Department)department.getValue()).getId();
+    }
     Date courseStartDate = startDate.getValue();
     Date courseStopDate = stopDate.getValue();
     String courseContent = textArea.getValue();
+    if(name.isEmpty() || code.isEmpty() || startDate.isEmpty() || stopDate.isEmpty()){
+      new Notification("One or more of the fields are empty!",
+              "<br/>Be more <i>carefull</i>",
+              Notification.TYPE_HUMANIZED_MESSAGE, true)
+              .show(Page.getCurrent());
+    }else{
+      Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
+      courseService.saveCourse(course, SecurityHelper.getUserName());
+    }
 
-    Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
-
-    courseService.saveCourse(course, SecurityHelper.getUserName());
   }
 
   private void loadCourse() {

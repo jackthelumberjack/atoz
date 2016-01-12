@@ -1,5 +1,5 @@
 package com.atoz.security;
-
+import java.util.Collection;
 import com.atoz.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+
 
 public class AuthManager implements AuthenticationManager {
 
