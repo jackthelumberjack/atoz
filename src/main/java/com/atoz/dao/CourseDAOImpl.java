@@ -2,6 +2,7 @@ package com.atoz.dao;
 
 import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
+import com.atoz.model.UserInformation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
@@ -10,6 +11,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import com.atoz.dao.UserDAOImpl;
+
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -24,6 +27,9 @@ public class CourseDAOImpl implements CourseDAO {
   private Log log = LogFactory.getLog(CourseDAOImpl.class);
 
 
+
+
+
   private NamedParameterJdbcTemplate template;
 
   public void setDataSource(DataSource dataSource) {
@@ -31,9 +37,22 @@ public class CourseDAOImpl implements CourseDAO {
     template = new NamedParameterJdbcTemplate(dataSource);
   }
 
+UserDAO user;
+
+  public void setUserdao(UserDAO userdao) {
+
+    //template = new NamedParameterJdbcTemplate(userdao);
+     user=userdao;
+  }
+
   private String insertCourse = "insert into courses(name, code, department_id, start_date, end_date, content) " +
       " values(:name, :code, :department_id, :start_date, :end_date, :content)";
 
+
+
+
+  private String insertCourseUser="insert into user_course(uid, cid) " +
+          " values(:uid, :cid)";
   @Override
   public void saveCourse(Course course, String userName) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -46,6 +65,16 @@ public class CourseDAOImpl implements CourseDAO {
       params.addValue("end_date", course.getStopDate());
       params.addValue("content", course.getContent());
       template.update(insertCourse, params, keyHolder);
+     // UserDAOImpl udao =new UserDAOImpl();
+     // UserInformation uinfo=udao.getUserInformation("sbreban");
+      //System.out.println(""+uinfo.getUserID());
+     // Course c=loadCourse(course.getName());
+     // MapSqlParameterSource params2 = new MapSqlParameterSource();
+    //  params2.addValue("uid",uinfo.getUserID());
+     // params2.addValue("cid",c.getId());
+
+
+
     } catch (DataAccessException ex) {
       log.error("Failed to save course: " + ex);
     }
@@ -69,20 +98,24 @@ public class CourseDAOImpl implements CourseDAO {
     return courseDTOs;
   }
 
-  private String selectCourse = "select * from courses c where c.id=:course_id";
+  private String selectCourse = "select * from courses c where c.name=:course_name";
 
   @Override
-  public Course loadCourse(int courseId) {
+  public Course loadCourse(String name) {
     Course course = null;
     try {
       MapSqlParameterSource params = new MapSqlParameterSource();
-      params.addValue("course_id", courseId);
+      params.addValue("course_name", name);
       course = template.queryForObject(selectCourse, params, new CourseRowMapper());
     } catch (DataAccessException ex) {
       log.error("Failed to load course: " + ex);
     }
     return course;
   }
+
+  //=========================================================
+
+
 
   private final class CourseDTORowMapper implements RowMapper<CourseDTO> {
     @Override

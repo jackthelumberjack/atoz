@@ -9,7 +9,8 @@ import com.vaadin.server.WrappedSession;
 import com.vaadin.ui.UI;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
+import com.atoz.dao.UserDAOImpl;
+import com.atoz.model.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
@@ -32,6 +33,9 @@ public class AppUI extends UI {
     navigator.addView("user", UserView.class);
 
     navigator.navigateTo("login");
+
+
+
     setNavigator(navigator);
   }
 

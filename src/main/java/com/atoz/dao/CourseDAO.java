@@ -12,5 +12,5 @@ public interface CourseDAO {
 
   void saveCourse(Course course, String userName);
   List<CourseDTO> loadCoursesForUser(String userName);
-  Course loadCourse(int courseId);
+  Course loadCourse(String name);
 }

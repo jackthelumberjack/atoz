@@ -72,6 +72,7 @@ public class UserDAOImpl implements UserDAO {
       userInformation = template.queryForObject(selectUserInformation, params, new UserDetailsRowMapper());
     } catch (DataAccessException ex) {
       log.error("Failed to load user information: " + ex);
+      System.out.println("Failed to load user information: ");
     }
     return userInformation;
   }

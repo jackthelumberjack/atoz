@@ -34,4 +34,9 @@ public class User {
   public List<String> getRoles() {
     return roles;
   }
+
+  public  String ToString()
+  {
+    return getUserName();
+  }
 }

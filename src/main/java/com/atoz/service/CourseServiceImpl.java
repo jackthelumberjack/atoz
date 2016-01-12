@@ -28,7 +28,7 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public Course loadCourse(int courseId) {
-    return courseDAO.loadCourse(courseId);
+  public Course loadCourse(String coursname) {
+    return courseDAO.loadCourse(coursname);
   }
 }

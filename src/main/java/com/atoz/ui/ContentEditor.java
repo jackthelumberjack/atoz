@@ -199,6 +199,10 @@ public class ContentEditor extends HorizontalLayout {
     }else{
       Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
       courseService.saveCourse(course, SecurityHelper.getUserName());
+      new Notification("Course has been <font color=green>successfully</font> added!",
+              "<br/>",
+              Notification.TYPE_HUMANIZED_MESSAGE, true)
+              .show(Page.getCurrent());
     }
 
   }
@@ -230,7 +234,8 @@ public class ContentEditor extends HorizontalLayout {
     okButton.addClickListener(new Button.ClickListener() {
       @Override
       public void buttonClick(Button.ClickEvent clickEvent) {
-        Course course = courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getId());
+        Course course = courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getName());
+
         name.setValue(course.getName());
         code.setValue(course.getCode());
         startDate.setValue(course.getStartDate());
