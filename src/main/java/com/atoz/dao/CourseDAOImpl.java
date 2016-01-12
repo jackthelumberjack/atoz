@@ -27,6 +27,7 @@ public class CourseDAOImpl implements CourseDAO {
   private NamedParameterJdbcTemplate template;
 
   public void setDataSource(DataSource dataSource) {
+
     template = new NamedParameterJdbcTemplate(dataSource);
   }
 
