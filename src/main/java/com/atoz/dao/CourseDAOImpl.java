@@ -12,6 +12,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -23,7 +26,8 @@ import java.util.List;
  */
 public class CourseDAOImpl implements CourseDAO {
 
-  private Log log = LogFactory.getLog(CourseDAOImpl.class);
+ // private Log log = LogFactory.getLog(CourseDAOImpl.class);
+  static Logger log = Logger.getLogger(CourseDAOImpl.class.getName());
 
   private NamedParameterJdbcTemplate template;
   private UserDAO userDAO;
@@ -45,6 +49,7 @@ public class CourseDAOImpl implements CourseDAO {
 
   @Override
   public int saveCourse(Course course, String userName) {
+      PropertyConfigurator.configure("D:\\AtoZ\\src\\main\\log4j.properties");
     KeyHolder keyHolder = new GeneratedKeyHolder();
     MapSqlParameterSource params = new MapSqlParameterSource();
     try {
@@ -63,11 +68,12 @@ public class CourseDAOImpl implements CourseDAO {
 
 
       template.update(insertCourse, params, keyHolder);
+      log.info("Course " +course.getName() +" was added");
       UserInformation userInformation=userDAO.getUserInformation("sbreban");
       Course c=loadCourse(course.getName());
       MapSqlParameterSource params2 = new MapSqlParameterSource();
    //   params = new MapSqlParameterSource();
-      System.out.println(""+userInformation.getUserID());
+     // System.out.println(""+userInformation.getUserID());
       params2.addValue("uid",userInformation.getUserID());
       params2.addValue("cid",c.getId());
       template.update(insertCourseUser, params2, keyHolder);
