@@ -34,8 +34,6 @@ public class AppUI extends UI {
 
     navigator.navigateTo("login");
 
-
-
     setNavigator(navigator);
   }
 

@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
  * Created by Sergiu on 22.11.2015.
  */
 public enum SecurityRole implements GrantedAuthority {
-  ADMIN("admin"), USER("user"), INSTRUCTOR("instructor");
+  ADMIN("admin"), STUDENT("student"), INSTRUCTOR("instructor");
 
   String authority;
 

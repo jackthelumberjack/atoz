@@ -23,12 +23,17 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public List<CourseDTO> loadCoursesForUser(String userName) {
-    return courseDAO.loadCoursesForUser(userName);
+  public List<CourseDTO> loadCoursesForInstructor(String userName) {
+    return courseDAO.loadCoursesForInstructor(userName);
   }
 
   @Override
   public Course loadCourse(String coursname) {
     return courseDAO.loadCourse(coursname);
+  }
+
+  @Override
+  public List<CourseDTO> loadCoursesForStudent(String userName) {
+    return courseDAO.loadCoursesForStudent(userName);
   }
 }

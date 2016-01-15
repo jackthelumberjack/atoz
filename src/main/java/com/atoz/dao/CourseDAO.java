@@ -11,6 +11,7 @@ import java.util.List;
 public interface CourseDAO {
 
   int saveCourse(Course course, String userName);
-  List<CourseDTO> loadCoursesForUser(String userName);
+  List<CourseDTO> loadCoursesForInstructor(String userName);
   Course loadCourse(String name);
+  List<CourseDTO> loadCoursesForStudent(String userName);
 }

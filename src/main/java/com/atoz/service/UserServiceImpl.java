@@ -31,8 +31,8 @@ public class UserServiceImpl implements UserService {
       for (String role : modelUser.getRoles()) {
         if (role.equals(SecurityRole.ADMIN.getAuthority())) {
           authorities.add(SecurityRole.ADMIN);
-        } else if (role.equals(SecurityRole.USER.getAuthority())) {
-          authorities.add(SecurityRole.USER);
+        } else if (role.equals(SecurityRole.STUDENT.getAuthority())) {
+          authorities.add(SecurityRole.STUDENT);
         } else if (role.equals(SecurityRole.INSTRUCTOR.getAuthority())) {
           authorities.add(SecurityRole.INSTRUCTOR);
         }

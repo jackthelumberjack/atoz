@@ -86,7 +86,7 @@ public class CourseDAOImpl implements CourseDAO {
       " where u.login=:login";
 
   @Override
-  public List<CourseDTO> loadCoursesForUser(String userName) {
+  public List<CourseDTO> loadCoursesForInstructor(String userName) {
     List<CourseDTO> courseDTOs = null;
     try {
       MapSqlParameterSource params = new MapSqlParameterSource();
@@ -112,6 +112,25 @@ public class CourseDAOImpl implements CourseDAO {
       log.error("Failed to load course: " + ex);
     }
     return course;
+  }
+
+  String selectCoursesForStudent = "select c.id, c.name from courses c " +
+      "inner join course_enrolement ce on ce.course_id=c.id " +
+      "inner join users u on u.id=ce.student_id " +
+      "where u.login=:login";
+
+  @Override
+  public List<CourseDTO> loadCoursesForStudent(String userName) {
+    List<CourseDTO> courseDTOs = null;
+    try {
+      MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+      parameterSource.addValue("login", userName);
+      courseDTOs = template.query(selectCoursesForStudent, parameterSource, new CourseDTORowMapper());
+      log.info("Courses were loaded for student: "+userName);
+    } catch (DataAccessException ex) {
+      log.error("Failed to load courses for student: " + ex);
+    }
+    return courseDTOs;
   }
 
   private final class CourseDTORowMapper implements RowMapper<CourseDTO> {
