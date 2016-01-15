@@ -3,8 +3,7 @@ package com.atoz.dao;
 import com.atoz.model.Department;
 import com.atoz.model.User;
 import com.atoz.model.UserInformation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class UserDAOImpl implements UserDAO {
 
-  private Log log = LogFactory.getLog(UserDAOImpl.class);
+  private Logger log = Logger.getLogger(UserDAOImpl.class);
 
   NamedParameterJdbcTemplate template;
 

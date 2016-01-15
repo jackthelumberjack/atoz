@@ -3,8 +3,6 @@ package com.atoz.dao;
 import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
 import com.atoz.model.UserInformation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,7 +24,6 @@ import java.util.List;
  */
 public class CourseDAOImpl implements CourseDAO {
 
- // private Log log = LogFactory.getLog(CourseDAOImpl.class);
   static Logger log = Logger.getLogger(CourseDAOImpl.class.getName());
 
   private NamedParameterJdbcTemplate template;
@@ -95,6 +92,7 @@ public class CourseDAOImpl implements CourseDAO {
       MapSqlParameterSource params = new MapSqlParameterSource();
       params.addValue("login", userName);
       courseDTOs = template.query(selectCoursesForUser, params, new CourseDTORowMapper());
+      log.info("Courses were loaded for user: "+userName);
     } catch (DataAccessException ex) {
       log.error("Failed to load courses for user: " + ex);
     }
