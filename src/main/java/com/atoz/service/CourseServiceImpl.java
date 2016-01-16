@@ -3,6 +3,7 @@ package com.atoz.service;
 import com.atoz.dao.CourseDAO;
 import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
+import com.atoz.model.CourseEnrolementDTO;
 
 import java.util.List;
 
@@ -35,5 +36,20 @@ public class CourseServiceImpl implements CourseService {
   @Override
   public List<CourseDTO> loadCoursesForStudent(String userName) {
     return courseDAO.loadCoursesForStudent(userName);
+  }
+
+  @Override
+  public List<CourseEnrolementDTO> getGrades(String userName) {
+    return courseDAO.getGrades(userName);
+  }
+
+  @Override
+  public List<CourseEnrolementDTO> getStudentsForCourse(int courseId) {
+    return courseDAO.getStudentsForCourse(courseId);
+  }
+
+  @Override
+  public void saveGrades(List<CourseEnrolementDTO> courseEnrolementDTOs) {
+    courseDAO.saveGrades(courseEnrolementDTOs);
   }
 }

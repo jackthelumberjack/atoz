@@ -2,6 +2,7 @@ package com.atoz.dao;
 
 import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
+import com.atoz.model.CourseEnrolementDTO;
 import com.atoz.model.UserInformation;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -133,6 +134,66 @@ public class CourseDAOImpl implements CourseDAO {
     return courseDTOs;
   }
 
+  String selectGrades = "select c.name, c.id, ud.first_name, ud.last_name, u.id, ce.grade from courses c " +
+      "inner join course_enrolement ce on ce.course_id=c.id " +
+      "inner join users u on u.id=ce.student_id " +
+      "inner join user_details ud on ud.user_id=u.id " +
+      "where u.login=:login";
+
+  @Override
+  public List<CourseEnrolementDTO> getGrades(String userName) {
+    List<CourseEnrolementDTO> enrolementDTOs = null;
+    try {
+      MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+      parameterSource.addValue("login", userName);
+      enrolementDTOs = template.query(selectGrades, parameterSource, new CourseEnrolementDTOMapper());
+      log.info("Courses were loaded for student: "+userName);
+    } catch (DataAccessException ex) {
+      log.error("Failed to load courses for student: " + ex);
+    }
+    return enrolementDTOs;
+  }
+
+  String selectStudentsForCourse = "select c.name, c.id, ud.first_name, ud.last_name, u.id, ce.grade from courses c " +
+      "inner join course_enrolement ce on ce.course_id=c.id " +
+      "inner join users u on u.id=ce.student_id " +
+      "inner join user_details ud on ud.user_id=u.id " +
+      "where c.id=:course_id";
+
+  @Override
+  public List<CourseEnrolementDTO> getStudentsForCourse(int courseId) {
+    List<CourseEnrolementDTO> enrolementDTOs = null;
+    try {
+      MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+      parameterSource.addValue("course_id", courseId);
+      enrolementDTOs = template.query(selectStudentsForCourse, parameterSource, new CourseEnrolementDTOMapper());
+      log.info("Students were loaded for course: "+courseId);
+    } catch (DataAccessException ex) {
+      log.error("Failed to load students for course: " + ex);
+    }
+    return enrolementDTOs;
+  }
+
+  String updateGrades = "update course_enrolement ce " +
+      "set grade=:grade " +
+      "where ce.student_id=:student_id and ce.course_id=:course_id";
+
+  @Override
+  public void saveGrades(List<CourseEnrolementDTO> courseEnrolementDTOs) {
+    try {
+      for (CourseEnrolementDTO courseEnrolementDTO : courseEnrolementDTOs) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("grade", courseEnrolementDTO.getGrade());
+        parameterSource.addValue("student_id", courseEnrolementDTO.getStudentId());
+        parameterSource.addValue("course_id", courseEnrolementDTO.getCourseId());
+        template.update(updateGrades, parameterSource);
+      }
+      log.info("Successfully updated grades");
+    } catch (DataAccessException ex) {
+      log.error("Failed to update grades: " + ex);
+    }
+  }
+
   private final class CourseDTORowMapper implements RowMapper<CourseDTO> {
     @Override
     public CourseDTO mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -144,6 +205,14 @@ public class CourseDAOImpl implements CourseDAO {
     @Override
     public Course mapRow(ResultSet resultSet, int i) throws SQLException {
       return new Course(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getInt(4), resultSet.getDate(5), resultSet.getDate(6), resultSet.getString(7));
+    }
+  }
+
+  private final class CourseEnrolementDTOMapper implements RowMapper<CourseEnrolementDTO> {
+    @Override
+    public CourseEnrolementDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+      return new CourseEnrolementDTO(resultSet.getString(1), resultSet.getInt(2), resultSet.getString(3)+" "+resultSet.getString(4),
+          resultSet.getInt(5), resultSet.getInt(6));
     }
   }
 }

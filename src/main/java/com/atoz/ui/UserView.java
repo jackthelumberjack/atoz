@@ -69,6 +69,15 @@ public class UserView extends VerticalLayout implements View {
           content.addComponent(fileManager);
         }
       });
+
+      instructorMenu.addItem("View students", new MenuBar.Command() {
+        @Override
+        public void menuSelected(MenuBar.MenuItem menuItem) {
+          StudentsView studentsView = new StudentsView();
+          content.removeAllComponents();
+          content.addComponent(studentsView);
+        }
+      });
     }
 
     if (authorities.contains(SecurityRole.ADMIN)) {

@@ -1,13 +1,11 @@
 package com.atoz.ui;
 
-import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
-import com.atoz.model.Department;
+import com.atoz.model.CourseEnrolementDTO;
 import com.atoz.security.SecurityHelper;
 import com.atoz.service.CourseService;
 import com.atoz.service.UserService;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
 import java.util.List;
@@ -19,6 +17,7 @@ import java.util.logging.Logger;
 public class CourseView extends HorizontalLayout {
 
   private Button viewUserCourses;
+  private Button viewUserGrades;
 
   private VerticalLayout centerLayout;
 
@@ -44,6 +43,11 @@ public class CourseView extends HorizontalLayout {
     buttonsLayout.addComponent(viewUserCourses);
     buttonsLayout.setComponentAlignment(viewUserCourses, Alignment.MIDDLE_CENTER);
 
+    viewUserGrades = new Button("View your grades");
+    viewUserGrades.setWidth("100%");
+    buttonsLayout.addComponent(viewUserGrades);
+    buttonsLayout.setComponentAlignment(viewUserGrades, Alignment.MIDDLE_CENTER);
+
     leftMenu.addComponent(buttonsLayout);
     leftMenu.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
 
@@ -61,6 +65,12 @@ public class CourseView extends HorizontalLayout {
       @Override
       public void buttonClick(Button.ClickEvent clickEvent) {
         loadEnrolledCourses();
+      }
+    });
+    viewUserGrades.addClickListener(new Button.ClickListener() {
+      @Override
+      public void buttonClick(Button.ClickEvent clickEvent) {
+        showGrades();
       }
     });
   }
@@ -90,16 +100,40 @@ public class CourseView extends HorizontalLayout {
       @Override
       public void buttonClick(Button.ClickEvent clickEvent) {
         centerLayout.removeAllComponents();
+
+        HorizontalLayout topMenu = new HorizontalLayout();
+        Button testButton = new Button("Tests");
+        Button homeworkButton = new Button("Homeworks");
+        topMenu.addComponent(testButton);
+        topMenu.addComponent(homeworkButton);
+
         RichTextArea textArea = new RichTextArea();
         textArea.setSizeFull();
         textArea.setValue(courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getName()).getContent());
         textArea.setReadOnly(true);
+
+        centerLayout.addComponent(topMenu);
         centerLayout.addComponent(textArea);
+        centerLayout.setExpandRatio(topMenu, 0.5f);
+        centerLayout.setExpandRatio(textArea, 9.5f);
       }
     });
 
     centerLayout.removeAllComponents();
     centerLayout.addComponent(selectCourseLayout);
     centerLayout.setComponentAlignment(selectCourseLayout, Alignment.MIDDLE_CENTER);
+  }
+
+  private void showGrades() {
+    List<CourseEnrolementDTO> courseEnrolementDTOs = courseService.getGrades(SecurityHelper.getUserName());
+    Grid grid = new Grid();
+    grid.addColumn("courseName", String.class);
+    grid.addColumn("grade", Integer.class);
+    for (CourseEnrolementDTO courseEnrolementDTO : courseEnrolementDTOs) {
+      grid.addRow(courseEnrolementDTO.getCourseName(), courseEnrolementDTO.getGrade());
+    }
+    centerLayout.removeAllComponents();
+    centerLayout.addComponent(grid);
+    centerLayout.setComponentAlignment(grid, Alignment.MIDDLE_CENTER);
   }
 }

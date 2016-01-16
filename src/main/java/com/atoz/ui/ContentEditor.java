@@ -10,6 +10,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -234,6 +235,7 @@ public class ContentEditor extends HorizontalLayout {
     courseCombo.setItemCaptionPropertyId("name");
     courseCombo.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
     courseCombo.setNullSelectionAllowed(false);
+    courseCombo.setValue(courseDTOs.get(0));
 
     HorizontalLayout buttonsLayout = new HorizontalLayout();
 //    buttonsLayout.setStyleName("v-ddwrapper-over");
@@ -244,9 +246,14 @@ public class ContentEditor extends HorizontalLayout {
       @Override
       public void buttonClick(Button.ClickEvent clickEvent) {
         Course course = courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getName());
-
         name.setValue(course.getName());
         code.setValue(course.getCode());
+        Collection<Department> departments = (Collection<Department>)department.getItemIds();
+        for (Department aDepartment : departments) {
+          if (aDepartment.getId() == course.getDepartmentId()) {
+            department.setValue(aDepartment);
+          }
+        }
         startDate.setValue(course.getStartDate());
         stopDate.setValue(course.getStopDate());
         textArea.setValue(course.getContent());

@@ -63,9 +63,9 @@ public class ForumView extends VerticalLayout {
     ForumSubject subject = null;
     List<ForumSubject> subjects = forum.getSubjects();
 
-    for(int i=0;i<subjects.size();i++) {
-      if(subjects.get(i).getId() == Integer.parseInt(topic.split(" ")[0])) {
-        subject = subjects.get(i);
+    for (ForumSubject subject1 : subjects) {
+      if (subject1.getId() == Integer.parseInt(topic.split(" ")[0])) {
+        subject = subject1;
       }
     }
 
@@ -81,8 +81,8 @@ public class ForumView extends VerticalLayout {
   public void initContainer() {
     List<ForumSubject> subj = forumService.getAllTopics();
     forum.setSubjects(subj);
-    for(int i=0;i<subj.size();i++) {
-      list.addItem(subj.get(i).toString());
+    for (ForumSubject aSubj : subj) {
+      list.addItem(aSubj.toString());
     }
   }
 
