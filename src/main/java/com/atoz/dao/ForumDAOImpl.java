@@ -20,15 +20,15 @@ public class ForumDAOImpl extends BaseDAO implements ForumDAO {
 
   private Logger log = Logger.getLogger(ForumDAOImpl.class.getName());
 
-  String insertSubject = "insert into forum_topics(id, title) " +
-      "values (:subject_id, :subject_title)";
+  String insertSubject = "insert into forum_topics(title) " +
+      "values (:subject_title)";
 
   @Override
   public boolean saveTopic(ForumSubject forumSubject) {
     boolean result = false;
     try {
       MapSqlParameterSource parameterSource  = new MapSqlParameterSource();
-      parameterSource.addValue("subject_id", forumSubject.getId());
+//      parameterSource.addValue("subject_id", forumSubject.getId());
       parameterSource.addValue("subject_title", forumSubject.getTitle());
       template.update(insertSubject, parameterSource);
       result = true;

@@ -53,7 +53,6 @@ public class ForumView extends VerticalLayout {
       @Override
       public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
         goToForumTopic(event.getProperty().toString());
-
       }
     });
 

@@ -110,7 +110,7 @@ public class CourseView extends HorizontalLayout {
             centerLayout.removeAllComponents();
 
             VerticalLayout hwsMenu = new VerticalLayout();
-            
+
 
             RichTextArea textArea = new RichTextArea();
             textArea.setSizeFull();
