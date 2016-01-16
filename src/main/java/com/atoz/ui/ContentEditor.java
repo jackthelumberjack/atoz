@@ -227,7 +227,7 @@ public class ContentEditor extends HorizontalLayout {
     courseLabel.setWidth("50%");
 
     ComboBox courseCombo = new ComboBox();
-    List<CourseDTO> courseDTOs = courseService.loadCoursesForUser(SecurityHelper.getUserName());
+    List<CourseDTO> courseDTOs = courseService.loadCoursesForInstructor(SecurityHelper.getUserName());
     BeanItemContainer<CourseDTO> beanItemContainer = new BeanItemContainer<>(CourseDTO.class);
     beanItemContainer.addAll(courseDTOs);
     courseCombo.setContainerDataSource(beanItemContainer);

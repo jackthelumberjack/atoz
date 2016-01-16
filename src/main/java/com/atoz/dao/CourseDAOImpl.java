@@ -3,8 +3,6 @@ package com.atoz.dao;
 import com.atoz.model.Course;
 import com.atoz.model.CourseDTO;
 import com.atoz.model.UserInformation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,7 +24,6 @@ import java.util.List;
  */
 public class CourseDAOImpl implements CourseDAO {
 
- // private Log log = LogFactory.getLog(CourseDAOImpl.class);
   static Logger log = Logger.getLogger(CourseDAOImpl.class.getName());
 
   private NamedParameterJdbcTemplate template;
@@ -89,12 +86,13 @@ public class CourseDAOImpl implements CourseDAO {
       " where u.login=:login";
 
   @Override
-  public List<CourseDTO> loadCoursesForUser(String userName) {
+  public List<CourseDTO> loadCoursesForInstructor(String userName) {
     List<CourseDTO> courseDTOs = null;
     try {
       MapSqlParameterSource params = new MapSqlParameterSource();
       params.addValue("login", userName);
       courseDTOs = template.query(selectCoursesForUser, params, new CourseDTORowMapper());
+      log.info("Courses were loaded for user: "+userName);
     } catch (DataAccessException ex) {
       log.error("Failed to load courses for user: " + ex);
     }
@@ -114,6 +112,25 @@ public class CourseDAOImpl implements CourseDAO {
       log.error("Failed to load course: " + ex);
     }
     return course;
+  }
+
+  String selectCoursesForStudent = "select c.id, c.name from courses c " +
+      "inner join course_enrolement ce on ce.course_id=c.id " +
+      "inner join users u on u.id=ce.student_id " +
+      "where u.login=:login";
+
+  @Override
+  public List<CourseDTO> loadCoursesForStudent(String userName) {
+    List<CourseDTO> courseDTOs = null;
+    try {
+      MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+      parameterSource.addValue("login", userName);
+      courseDTOs = template.query(selectCoursesForStudent, parameterSource, new CourseDTORowMapper());
+      log.info("Courses were loaded for student: "+userName);
+    } catch (DataAccessException ex) {
+      log.error("Failed to load courses for student: " + ex);
+    }
+    return courseDTOs;
   }
 
   private final class CourseDTORowMapper implements RowMapper<CourseDTO> {

@@ -11,7 +11,7 @@ import java.util.List;
 public interface CourseService {
 
   int saveCourse(Course course, String userName);
-  List<CourseDTO> loadCoursesForUser(String userName);
+  List<CourseDTO> loadCoursesForInstructor(String userName);
   Course loadCourse(String coursename);
-
+  List<CourseDTO> loadCoursesForStudent(String userName);
 }
