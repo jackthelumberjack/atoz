@@ -194,23 +194,23 @@ public class ContentEditor extends HorizontalLayout {
     String courseContent = textArea.getValue();
     if(name.isEmpty() || code.isEmpty() || startDate.isEmpty() || stopDate.isEmpty()){
       new Notification("One or more of the fields are empty!",
-              "<br/>Be more <i>carefull</i>",
-              Notification.TYPE_HUMANIZED_MESSAGE, true)
-              .show(Page.getCurrent());
+          "<br/>Be more <i>carefull</i>",
+          Notification.TYPE_HUMANIZED_MESSAGE, true)
+          .show(Page.getCurrent());
     }else{
       Course course = new Course(0, courseName, courseCode, departmentId, courseStartDate, courseStopDate, courseContent);
       int value=courseService.saveCourse(course, SecurityHelper.getUserName());
       if (value==1)
       {
-        new Notification("Course <font color=red>exists</font> already!",
-                "<br/>",
-                Notification.TYPE_HUMANIZED_MESSAGE, true)
-                .show(Page.getCurrent());
+        new Notification("Course has been <font color=green>successfully</font> edited!",
+            "<br/>",
+            Notification.TYPE_HUMANIZED_MESSAGE, true)
+            .show(Page.getCurrent());
       }else{
         new Notification("Course has been <font color=green>successfully</font> added!",
-                "<br/>",
-                Notification.TYPE_HUMANIZED_MESSAGE, true)
-                .show(Page.getCurrent());
+            "<br/>",
+            Notification.TYPE_HUMANIZED_MESSAGE, true)
+            .show(Page.getCurrent());
       }
 
     }
@@ -229,54 +229,61 @@ public class ContentEditor extends HorizontalLayout {
 
     ComboBox courseCombo = new ComboBox();
     List<CourseDTO> courseDTOs = courseService.loadCoursesForInstructor(SecurityHelper.getUserName());
-    BeanItemContainer<CourseDTO> beanItemContainer = new BeanItemContainer<>(CourseDTO.class);
-    beanItemContainer.addAll(courseDTOs);
-    courseCombo.setContainerDataSource(beanItemContainer);
-    courseCombo.setItemCaptionPropertyId("name");
-    courseCombo.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
-    courseCombo.setNullSelectionAllowed(false);
-    courseCombo.setValue(courseDTOs.get(0));
+    if (courseDTOs == null || courseDTOs.isEmpty()) {
+      Notification notification = new Notification(
+          "Warning",
+          "No courses for user",
+          Notification.TYPE_WARNING_MESSAGE);
+      notification.show(Page.getCurrent());
+    } else {
+      BeanItemContainer<CourseDTO> beanItemContainer = new BeanItemContainer<>(CourseDTO.class);
+      beanItemContainer.addAll(courseDTOs);
+      courseCombo.setContainerDataSource(beanItemContainer);
+      courseCombo.setItemCaptionPropertyId("name");
+      courseCombo.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
+      courseCombo.setNullSelectionAllowed(false);
+      courseCombo.setValue(courseDTOs.get(0));
 
-    HorizontalLayout buttonsLayout = new HorizontalLayout();
-//    buttonsLayout.setStyleName("v-ddwrapper-over");
-    buttonsLayout.setWidth("60%");
-    Button okButton = new Button("OK");
-    okButton.setWidth("100%");
-    okButton.addClickListener(new Button.ClickListener() {
-      @Override
-      public void buttonClick(Button.ClickEvent clickEvent) {
-        Course course = courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getName());
-        name.setValue(course.getName());
-        code.setValue(course.getCode());
-        Collection<Department> departments = (Collection<Department>)department.getItemIds();
-        for (Department aDepartment : departments) {
-          if (aDepartment.getId() == course.getDepartmentId()) {
-            department.setValue(aDepartment);
+      HorizontalLayout buttonsLayout = new HorizontalLayout();
+      buttonsLayout.setWidth("60%");
+      Button okButton = new Button("OK");
+      okButton.setWidth("100%");
+      okButton.addClickListener(new Button.ClickListener() {
+        @Override
+        public void buttonClick(Button.ClickEvent clickEvent) {
+          Course course = courseService.loadCourse(((CourseDTO) courseCombo.getValue()).getName());
+          name.setValue(course.getName());
+          code.setValue(course.getCode());
+          Collection<Department> departments = (Collection<Department>) department.getItemIds();
+          for (Department aDepartment : departments) {
+            if (aDepartment.getId() == course.getDepartmentId()) {
+              department.setValue(aDepartment);
+            }
           }
+          startDate.setValue(course.getStartDate());
+          stopDate.setValue(course.getStopDate());
+          textArea.setValue(course.getContent());
+          window.close();
         }
-        startDate.setValue(course.getStartDate());
-        stopDate.setValue(course.getStopDate());
-        textArea.setValue(course.getContent());
-        window.close();
-      }
-    });
-    Button cancelButton = new Button("Cancel");
-    cancelButton.setWidth("100%");
-    buttonsLayout.addComponent(okButton);
-    buttonsLayout.addComponent(cancelButton);
-    buttonsLayout.setExpandRatio(okButton, 1);
-    buttonsLayout.setExpandRatio(cancelButton, 1);
+      });
+      Button cancelButton = new Button("Cancel");
+      cancelButton.setWidth("100%");
+      buttonsLayout.addComponent(okButton);
+      buttonsLayout.addComponent(cancelButton);
+      buttonsLayout.setExpandRatio(okButton, 1);
+      buttonsLayout.setExpandRatio(cancelButton, 1);
 
-    VerticalLayout windowLayout = new VerticalLayout();
-    windowLayout.setSizeFull();
-    window.setContent(windowLayout);
-    windowLayout.addComponent(courseLabel);
-    windowLayout.addComponent(courseCombo);
-    windowLayout.addComponent(buttonsLayout);
-    windowLayout.setComponentAlignment(courseLabel, Alignment.MIDDLE_CENTER);
-    windowLayout.setComponentAlignment(courseCombo, Alignment.MIDDLE_CENTER);
-    windowLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
+      VerticalLayout windowLayout = new VerticalLayout();
+      windowLayout.setSizeFull();
+      window.setContent(windowLayout);
+      windowLayout.addComponent(courseLabel);
+      windowLayout.addComponent(courseCombo);
+      windowLayout.addComponent(buttonsLayout);
+      windowLayout.setComponentAlignment(courseLabel, Alignment.MIDDLE_CENTER);
+      windowLayout.setComponentAlignment(courseCombo, Alignment.MIDDLE_CENTER);
+      windowLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
 
-    UI.getCurrent().addWindow(window);
+      UI.getCurrent().addWindow(window);
+    }
   }
 }

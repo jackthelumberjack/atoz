@@ -104,6 +104,25 @@ public class CourseView extends HorizontalLayout {
         HorizontalLayout topMenu = new HorizontalLayout();
         Button testButton = new Button("Tests");
         Button homeworkButton = new Button("Homeworks");
+        homeworkButton.addClickListener(new Button.ClickListener(){
+          @Override
+          public void buttonClick(Button.ClickEvent clickEvent) {
+            centerLayout.removeAllComponents();
+
+            VerticalLayout hwsMenu = new VerticalLayout();
+            
+
+            RichTextArea textArea = new RichTextArea();
+            textArea.setSizeFull();
+            textArea.setValue(courseService.loadCourse(((CourseDTO)courseCombo.getValue()).getName()).getContent());
+            textArea.setReadOnly(true);
+
+            centerLayout.addComponent(topMenu);
+            centerLayout.addComponent(textArea);
+            centerLayout.setExpandRatio(topMenu, 0.5f);
+            centerLayout.setExpandRatio(textArea, 9.5f);
+          }
+        });
         topMenu.addComponent(testButton);
         topMenu.addComponent(homeworkButton);
 

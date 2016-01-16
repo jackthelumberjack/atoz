@@ -45,36 +45,40 @@ public class CourseDAOImpl implements CourseDAO {
   private String insertCourseUser="insert into user_course(user_id, course_id) " +
       " values(:uid, :cid)";
 
+  private String saveContent = "update courses c " +
+      "set c.content=:content " +
+      "where c.id=:course_id";
+
   @Override
   public int saveCourse(Course course, String userName) {
-      PropertyConfigurator.configure("D:\\AtoZ\\src\\main\\log4j.properties");
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    MapSqlParameterSource params = new MapSqlParameterSource();
+    MapSqlParameterSource params;
     try {
-      params.addValue("name", course.getName());
-      Course cu=null;
+      Course cu;
       cu=loadCourse(course.getName());
       if(cu!=null)
       {
-          return 1; //course already exists
+        params = new MapSqlParameterSource();
+        params.addValue("content", course.getContent());
+        params.addValue("course_id", cu.getId());
+        template.update(saveContent, params);
+        return 1; //course already exists
       }
+      params = new MapSqlParameterSource();
+      params.addValue("name", course.getName());
       params.addValue("code", course.getCode());
       params.addValue("department_id", course.getDepartmentId());
       params.addValue("start_date", course.getStartDate());
       params.addValue("end_date", course.getStopDate());
       params.addValue("content", course.getContent());
-
-
       template.update(insertCourse, params, keyHolder);
+
+      UserInformation userInformation = userDAO.getUserInformation(userName);
+      params = new MapSqlParameterSource();
+      params.addValue("uid",userInformation.getUserID());
+      params.addValue("cid",keyHolder.getKey().intValue());
+      template.update(insertCourseUser, params, keyHolder);
       log.info("Course " +course.getName() +" was added");
-      UserInformation userInformation=userDAO.getUserInformation("sbreban");
-      Course c=loadCourse(course.getName());
-      MapSqlParameterSource params2 = new MapSqlParameterSource();
-   //   params = new MapSqlParameterSource();
-     // System.out.println(""+userInformation.getUserID());
-      params2.addValue("uid",userInformation.getUserID());
-      params2.addValue("cid",c.getId());
-      template.update(insertCourseUser, params2, keyHolder);
     } catch (DataAccessException ex) {
       log.error("Failed to save course: " + ex);
     }
