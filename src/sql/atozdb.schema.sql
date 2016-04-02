@@ -16,6 +16,24 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `course_enrolement`
+--
+
+DROP TABLE IF EXISTS `course_enrolement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `course_enrolement` (
+  `course_id` int(11) NOT NULL DEFAULT '0',
+  `student_id` int(11) NOT NULL DEFAULT '0',
+  `grade` int(11) DEFAULT NULL,
+  PRIMARY KEY (`course_id`,`student_id`),
+  KEY `course_enrolement_student_fk` (`student_id`),
+  CONSTRAINT `course_enrolement_course_fk` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
+  CONSTRAINT `course_enrolement_student_fk` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `courses`
 --
 
@@ -33,7 +51,7 @@ CREATE TABLE `courses` (
   PRIMARY KEY (`id`),
   KEY `course_department_idx` (`department_id`),
   CONSTRAINT `course_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +65,40 @@ CREATE TABLE `departments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `forum_posts`
+--
+
+DROP TABLE IF EXISTS `forum_posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forum_posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `topic_id` int(11) DEFAULT NULL,
+  `post_date` datetime DEFAULT NULL,
+  `message` varchar(500) DEFAULT NULL,
+  `author` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `forum_posts_forum_topics_fk` (`topic_id`),
+  CONSTRAINT `forum_posts_forum_topics_fk` FOREIGN KEY (`topic_id`) REFERENCES `forum_topics` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `forum_topics`
+--
+
+DROP TABLE IF EXISTS `forum_topics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forum_topics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +166,7 @@ CREATE TABLE `user_details` (
   PRIMARY KEY (`id`),
   KEY `user_details_users_idx` (`user_id`),
   CONSTRAINT `user_details_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +198,7 @@ CREATE TABLE `users` (
   `login` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -159,4 +210,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-02  0:58:31
+-- Dump completed on 2016-04-02 17:46:13
